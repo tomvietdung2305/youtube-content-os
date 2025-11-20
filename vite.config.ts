@@ -3,12 +3,14 @@ import react from '@vitejs/plugin-react'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const env = loadEnv(mode, (process as any).cwd(), '');
+  // @ts-expect-error process is defined in node env
+  const cwd = process.cwd();
+  const env = loadEnv(mode, cwd, '')
+
   return {
     plugins: [react()],
     define: {
-      // Shim process.env so existing code using process.env.API_KEY works
-      'process.env': env
+      'process.env': JSON.stringify(env)
     },
     build: {
       outDir: 'dist',
